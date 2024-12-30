@@ -28,14 +28,35 @@ for r in range(rows):
     if end:
         break
 
+def loop(r: int, c: int) -> int:
+    original = matrix[r][c]
+    matrix[r][c] = '#'
+    seen = set()
+    direction = '^'
+    i, j = enemy
+    while True:
+        if (i, j, direction) in seen:
+            matrix[r][c] = original
+            return True
+
+        seen.add((i, j, direction))
+        after, dr, dc = directions[direction]
+        rr, cc = i + dr, j + dc
+
+        if rr < 0 or rr >= rows or cc < 0 or cc >= cols:
+            matrix[r][c] = original
+            return False
+        elif matrix[rr][cc] == '#':
+            direction = after
+        else:
+            i, j = rr, cc
+
 def part1() -> int:
     r, c = enemy
     matrix[r][c] = 'X'
     cross = 1
     direction = '^'
-    couter = 0
     while True:
-        couter += 1
         after, dr, dc = directions[direction]
         rr, cc = r + dr, c + dc
         if rr < 0 or rr >= rows or cc < 0 or cc >= cols:
@@ -48,4 +69,15 @@ def part1() -> int:
                 cross += 1
             r, c = rr, cc
 
+def part2() -> int:
+    count = 0
+    for r in range(rows):
+        print(r)
+        for c in range(cols):
+            if matrix[r][c] not in '#^':
+                if loop(r, c):
+                    count += 1
+    return count
+
 print(part1()) # 5551
+print(part2()) # 1939
