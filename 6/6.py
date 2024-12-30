@@ -1,87 +1,51 @@
-testcase = open('6/6.txt', 'r')
+testcase = open('6/6.txt', 'r').read().split('\n')
 
 matrix = []
 
 for line in testcase:
     matrix.append(list(line))
 
-matrix[-1] += '\n'
+def show_matrix(dumb: list[list]) -> None:
+    for line in dumb:
+        print(''.join(line))
 
-r, c = 0, 0
+rows, cols = len(matrix), len(matrix[0])
+directions = {
+    '^': ('>', -1, 0),
+    '>': ('v', 0, 1),
+    'v': ('<', 1, 0),
+    '<': ('^', 0, -1)
+}
+enemy = (None, None)
 
-for i in range(len(matrix)):
-    finish = False
-    for j in range(len(matrix[i])):
-        if matrix[i][j] == '^':
-            r, c = i, j
-            finish = True
-            break
-    if finish:
-        break
-
-cross = 1
-matrix[r][c] = 'X'
-starting = r, c
-up = True
-left = False
-right = False
-down = False
-end = False
-
-while True:
-    while up:
-        if r == 0:
+for r in range(rows):
+    end = False
+    for c in range(cols):
+        if matrix[r][c] == '^':
+            enemy = (r, c)
             end = True
             break
-        elif matrix[r - 1][c] == '#':
-            up = False
-            right = True
-            break
-        else:
-            r -= 1
-            if matrix[r][c] != 'X':
-                cross += 1
-                matrix[r][c] = 'X'
-    while right:
-        if c == len(matrix[r]) - 2:
-            end = True
-            break
-        elif matrix[r][c + 1] == '#':
-            right = False
-            down = True
-            break
-        else:
-            c += 1
-            if matrix[r][c] != 'X':
-                cross += 1
-                matrix[r][c] = 'X'
-    while down:
-        if r == len(matrix) - 1:
-            end = True
-            break
-        elif matrix[r + 1][c] == '#':
-            down = False
-            left = True
-            break
-        else:
-            r += 1
-            if matrix[r][c] != 'X':
-                cross += 1
-                matrix[r][c] = 'X'
-    while left:
-        if c == 0:
-            end = True
-            break
-        elif matrix[r][c - 1] == '#':
-            left = False
-            up = True
-            break
-        else:
-            c -= 1
-            if matrix[r][c] != 'X':
-                cross += 1
-                matrix[r][c] = 'X'
     if end:
         break
 
-print(cross) # 5551
+def part1() -> int:
+    r, c = enemy
+    matrix[r][c] = 'X'
+    cross = 1
+    direction = '^'
+    couter = 0
+    while True:
+        couter += 1
+        after, dr, dc = directions[direction]
+        rr, cc = r + dr, c + dc
+        if rr < 0 or rr >= rows or cc < 0 or cc >= cols:
+            return cross
+        elif matrix[rr][cc] == '#':
+            direction = after
+        else:
+            if matrix[rr][cc] != 'X':
+                matrix[rr][cc] = 'X'
+                cross += 1
+            r, c = rr, cc
+
+print(part1()) # 5551
