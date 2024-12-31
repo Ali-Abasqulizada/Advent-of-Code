@@ -38,9 +38,10 @@ def part1():
                 newpoint = point + 1 if direction == n else point + 1001
                 if rr == er and cc == ec:
                     ans = min(ans, newpoint)
+                    break
                 if (rr, cc) not in visit or newpoint < visit[(rr, cc)]:
                     visit[(rr, cc)] = newpoint
                     stack.append((rr, cc, newpoint, n))
     return ans
 
-print(part1()) #130536
+print(part1()) # 130536
